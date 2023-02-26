@@ -8,6 +8,8 @@ class Myapp (QWidget):
         super(Myapp, self).__init__()
         self.setWindowTitle("당신의 오늘 하루 어떠신가요?")
         self.initUi()
+        
+        
     
     def initUi(self):
         l1 = QLabel('당신의 오늘 하루 어떠신가요?',self)
