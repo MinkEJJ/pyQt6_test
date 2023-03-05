@@ -1,22 +1,61 @@
 import sys
 from PyQt6.QtWidgets import (QHBoxLayout,QRadioButton,QWidget,QVBoxLayout,QApplication,QPushButton,QMainWindow,QLabel, QCheckBox, QComboBox, QListWidget, QLineEdit,QLineEdit, QSpinBox, QDoubleSpinBox, QSlider)
-#from PyQt6.QtCore import QSize,Qdt # 작동오류가 나타나는 이유를 찾아야함.
-#from layout_colorwidget import Color # 레이아웃을 제작하려면 필요한 모듈
+import requests
+import json
 
 class Myapp (QWidget):
     def __init__(self):
         super(Myapp, self).__init__()
-        self.setWindowTitle("당신의 오늘 하루 어떠신가요?")
+        self.setWindowTitle("당신의 생각은?")
         self.initUi()
+         
+    def the_button_was_clicked(self): #버튼 클릭시 생기는 상세 이벤트
+        self.button.setText("loading..")# 버튼의 글씨가 바뀜
+        self.button.setEnabled(False)# 버튼 비활성화 : 연속 두번 실행을 방지
+        self.setWindowTitle("실행중")# 윈도우 타이틀도 실행중으로 변함
+        a=self.emotion.text()
+        client_id = "sa0qqrdqe9"
+        client_secret = "JYIU4N4Vm58P0w0nPOjMvFRRVHC04InIzqtXDucp"
+        url="https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"
+        headers = {
+            "X-NCP-APIGW-API-KEY-ID": client_id,
+            "X-NCP-APIGW-API-KEY": client_secret,
+            "Content-Type": "application/json"
+            }
+
+        # 텍스트 파일에서 문자열 받아오기
+        file_path = "파일의 절대경로 입력"
+        with open(file_path, "r", encoding="UTF-8") as file:
+            tmp = file.read()
+        # tmp에서 행바꿈(\n)을 제거한 문자열을 content에 저장
+        content = tmp.replace("\n", "")
+        data = {
+        "content": content
+        }
+
+        response = requests.post(url, data=a, headers=headers)
+        rescode = response.status_code
+        if(rescode == 200):
+            # string(response.text) > dictionary로 자료형 변경
+            json_object = json.loads(response.text)
+            print(json_object["document"]['sentiment'])
+            
+        else:
+            print("Error : " + response.text)
         
         
     
     def initUi(self):
-        l1 = QLabel('당신의 오늘 하루 어떠신가요?',self)
+        l1 = QLabel('당신을 위한 작품을 추천드립니다. 하단의 나의 기분을 적어봅시다. [작품 추천 프로그램 로고]',self)
         l1.move(500,500)
-        emotion = QLineEdit(self)
-        rb = QRadioButton('ex',self)
-        button = QPushButton('ex')
+        self.emotion = QLineEdit(self)
+        #self.emotion.setText("Hello!")
+        rb = QRadioButton('개인정보 수집,이용에 대한 동의 / 동의함',self) #개인정보 동의함 디자인 구현
+        self.button = QPushButton("전송")
+        self.button.clicked.connect(self.the_button_was_clicked)#버튼 클릭시 연결되는 이벤트
+        #self.setCentralWidget(self.button) #버튼이 화면 정중앙에 위치
+       
+
         lay0 = QHBoxLayout()
         layout = QVBoxLayout()
         
@@ -27,21 +66,24 @@ class Myapp (QWidget):
         layout.addSpacing(100)
         layout.addWidget(l1)
 #        layout.addSpacing(100)
-        layout.addStretch(1)
-        layout.addWidget(emotion)
+        layout.addStretch(10)
+        layout.addWidget(self.emotion)
         layout.addStretch(1)
 #        layout.addSpacing(100)
         layout.addWidget(rb)
-        layout.addStretch(1)
+        layout.addStretch(10)
 #        layout.addSpacing(100)
 
-        layout.addWidget(button)
+        layout.addWidget(self.button)
         layout.addSpacing(100)
         
         self.setLayout(lay0)
 #        self.resize(1000,1000)
         self.setGeometry(0,0,2000,1000)
         self.show()
+        
+
+
         
         #self.input_user()
     
