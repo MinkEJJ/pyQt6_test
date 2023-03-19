@@ -14,8 +14,9 @@ class Myapp (QWidget):
         self.button.setEnabled(False)# 버튼 비활성화 : 연속 두번 실행을 방지
         self.setWindowTitle("실행중")# 윈도우 타이틀도 실행중으로 변함
         a=self.emotion.text()
-        client_id = ""
-        client_secret = ""
+        
+        client_id = "sa0qqrdqe9"
+        client_secret = "IdzKmIPQtcHzlZGYI8PI5XjAKeMCRCngbE8VoUlA"
         url="https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"
         headers = {
             "X-NCP-APIGW-API-KEY-ID": client_id,
@@ -23,17 +24,20 @@ class Myapp (QWidget):
             "Content-Type": "application/json"
             }
 
-        # 텍스트 파일에서 문자열 받아오기
-        file_path = "파일의 절대경로 입력"
-        with open(file_path, "r", encoding="UTF-8") as file:
-            tmp = file.read()
+        # 텍스트 파일에서 문자열 받아오기 ->  body is not valid Latin-1. Use body.encode('utf-8') if you want to send it encoded in UTF-8.
+        #tmp= a.encode("utf-8")
+        #file_path = ""
+        #with open(file_path, "r", encoding="UTF-8") as file:
+        #   tmp = file.read()
         # tmp에서 행바꿈(\n)을 제거한 문자열을 content에 저장
-        content = tmp.replace("\n", "")
-        data = {
-        "content": content
-        }
-
-        response = requests.post(url, data=a, headers=headers)
+        #content = tmp.replace("\n", "")
+        #data = {"content": content}
+        #print(tmp)
+        
+        #content = tmp.replace("\n", "")
+        _data = {"content": a}
+        data = json.dumps(_data)
+        response = requests.post(url, data=data, headers=headers)
         rescode = response.status_code
         if(rescode == 200):
             # string(response.text) > dictionary로 자료형 변경
