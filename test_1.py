@@ -15,8 +15,8 @@ class Myapp (QWidget):
         self.setWindowTitle("실행중")# 윈도우 타이틀도 실행중으로 변함
         a=self.emotion.text()
         
-        client_id = "sa0qqrdqe9"
-        client_secret = "IdzKmIPQtcHzlZGYI8PI5XjAKeMCRCngbE8VoUlA"
+        client_id = ""
+        client_secret = ""
         url="https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"
         headers = {
             "X-NCP-APIGW-API-KEY-ID": client_id,
